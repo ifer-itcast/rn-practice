@@ -5082,6 +5082,13 @@ react-native-screens@^1.0.0-alpha.11:
   dependencies:
     debounce "^1.2.0"
 
+react-native-swiper@^1.6.0-nightly.3:
+  version "1.6.0-nightly.3"
+  resolved "https://registry.npm.taobao.org/react-native-swiper/download/react-native-swiper-1.6.0-nightly.3.tgz#02ff0b77f821aa18c3befb61e452c8a42648ecc6"
+  integrity sha1-Av8Ld/ghqhjDvvth5FLIpCZI7MY=
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-tab-navigator@^0.3.4:
   version "0.3.4"
   resolved "https://registry.npm.taobao.org/react-native-tab-navigator/download/react-native-tab-navigator-0.3.4.tgz#54a18f1ad06a09d4a0de81ff00416bc1b760c960"
