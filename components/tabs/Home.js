@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, StyleSheet, Text, ScrollView } from 'react-native';
+import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 const styles = StyleSheet.create({
@@ -47,21 +47,23 @@ export default class Home extends Component {
                         </Swiper>
                     </View>
                     <View style={styles.gridList}>
-                        <View style={styles.gridItem}>
-                            <Image style={styles.gridImg} source={require('../../images/calendar.png')} />
-                            <Text>天降正义</Text>
-                        </View>
+                        <TouchableOpacity style={styles.gridItem} onPress={() => this.Actions.in_theaters()}>
+                            <View>
+                                <Image style={styles.gridImg} source={require('../../images/files-and-folders.png')} />
+                                <Text>电影列表</Text>
+                            </View>
+                        </TouchableOpacity>
                         <View style={styles.gridItem}>
                             <Image style={styles.gridImg} source={require('../../images/draw.png')} />
                             <Text>法老之鹰</Text>
                         </View>
                         <View style={styles.gridItem}>
-                            <Image style={styles.gridImg} source={require('../../images/files-and-folders.png')} />
+                            <Image style={styles.gridImg} source={require('../../images/calendar.png')} />
                             <Text>末日铁拳</Text>
                         </View>
                         <View style={styles.gridItem}>
                             <Image style={styles.gridImg} source={require('../../images/print.png')} />
-                            <Text>士兵 76</Text>
+                            <Text>天降正义</Text>
                         </View>
                         <View style={styles.gridItem}>
                             <Image style={styles.gridImg} source={require('../../images/setup.png')} />

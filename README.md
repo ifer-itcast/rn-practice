@@ -193,3 +193,30 @@ export default class Home extends Component {
     </View>
 </ScrollView>
 ```
+
+## 编程式导航跳转电影列表
+
+**App.js**
+
+```javascript
+<Router>
+    {/* 配置 */}
+    <Stack>
+        <Scene key="main" component={Main} hideNavBar={true} />
+        <Scene key="in_theaters" component={MovieList} />
+    </Stack>
+</Router>
+```
+
+**Home.js**
+
+```javascript
+<TouchableOpacity style={styles.gridItem} onPress={() => this.Actions.in_theaters()}>
+    <View>
+        <Image style={styles.gridImg} source={require('../../images/files-and-folders.png')} />
+        <Text>电影列表</Text>
+    </View>
+</TouchableOpacity>
+```
+
+
