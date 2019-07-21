@@ -17,7 +17,7 @@ react-native start
 ## 配置路由
 
 ```javascript
-// 安装
+// 每次安装新包需要重新编译或Start
 yarn add react-native-router-flux
 ```
 
@@ -41,6 +41,47 @@ export default class App extends Component {
                     <Scene key="main" component={Main} hideNavBar={true} />
                 </Stack>
             </Router>
+        );
+    }
+}
+```
+
+## Main.js 中配置 TabBar
+
+```javascript
+yarn add react-native-tab-navigator
+```
+
+```javascript
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import TabNavigator from 'react-native-tab-navigator';
+
+import Home from './tabs/Home';
+import Cart from './tabs/Cart';
+import Member from './tabs/Member';
+
+export default class Main extends Component {
+    constructor() {
+        super();
+        this.state = {
+            selectedTab: 'home'
+        };
+    }
+    render() {
+        return (
+            <View style={{ flex: 1 }}>
+                <TabNavigator>
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === 'home'}
+                        title="首页"
+                        onPress={() => this.setState({ selectedTab: 'home' })}
+                    >
+                        <Home></Home>
+                    </TabNavigator.Item>
+                    {/* ... */}
+                </TabNavigator>
+            </View>
         );
     }
 }
