@@ -1,4 +1,4 @@
-package com.rn6;
+package com.practice;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "rn6";
+        return "practice";
     }
 }

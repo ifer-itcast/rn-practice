@@ -298,4 +298,3 @@ loadMore = () => {
 ```javascript
 <Scene key="moviedetail" component={MovieDetail} hideNavBar={true} />
 ```
-
