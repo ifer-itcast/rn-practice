@@ -298,3 +298,62 @@ loadMore = () => {
 ```javascript
 <Scene key="moviedetail" component={MovieDetail} hideNavBar={true} />
 ```
+
+## 修改应用图标和名称
+
+- android/app/src/main/res/values/strings.xml`修改应用名称
+- android\app\src\main\res\mipmap-xxxxxx`修改图标
+
+## 签名打包
+
+1. 先保证自己正确配置了所有的 RN 环境
+
+2. 在 cmd 命令行中，运行这一句话`keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000`
+
+- 其中： `my-release-key.keystore` 表示你一会儿要生成的那个 签名文件的 名称【很重要，要找个小本本记下来】
+- `-alias` 后面的东西，也很重要，需要找个小本本记下来，这个名称可以根据自己的需求改动`my-key-alias`
+- 当运行找个命令的时候，需要输入一系列的参数，找个口令的密码，【一定要找个小本本记下来】
+
+3. 当生成了签名之后，这个签名，默认保存到了自己的用户目录下`C:\Users\liulongbin\my-release-key.keystore`
+
+4. 将你的签名证书copy到 android/app目录下。
+
+5. 编辑 `android` -> `gradle.properties`文件，在最后，添加如下代码：
+
+```
+MYAPP_RELEASE_STORE_FILE=your keystore filename
+MYAPP_RELEASE_KEY_ALIAS=your keystore alias
+MYAPP_RELEASE_STORE_PASSWORD=*****
+MYAPP_RELEASE_KEY_PASSWORD=*****
+```
+
+6. 编辑 android/app/build.gradle文件添加如下代码：
+
+```
+...
+android {
+    ...
+    defaultConfig { ... }
+    + signingConfigs {
+    +    release {
+    +        storeFile file(MYAPP_RELEASE_STORE_FILE)
+    +        storePassword MYAPP_RELEASE_STORE_PASSWORD
+    +        keyAlias MYAPP_RELEASE_KEY_ALIAS
+    +        keyPassword MYAPP_RELEASE_KEY_PASSWORD
+    +    }
+    +}
+    buildTypes {
+        release {
+            ...
+    +        signingConfig signingConfigs.release
+        }
+    }
+}
+...
+```
+
+7. 进入项目根目录下的`android`文件夹，打开终端，然后输入`./gradlew assembleRelease`开始发布APK的Release版；
+
+8. 当发行完毕后，进入自己项目的`android\app\build\outputs\apk`目录中，找到`app-release.apk`，这就是我们发布完毕之后的完整安装包；就可以上传到各大应用商店供用户使用啦；
+
+> 注意：请记得妥善地保管好你的密钥库文件，不要上传到版本库或者其它的地方。
