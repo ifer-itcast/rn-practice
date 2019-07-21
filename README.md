@@ -175,3 +175,21 @@ export default class Home extends Component {
     }
 }
 ```
+
+## Home.js 六宫格布局
+
+```javascript
+<ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+    {/* 小屏装不下时需要 ScrollView 进行滚动 */}
+    <View>
+        <View style={styles.gridList}>
+            <View style={styles.gridItem}>
+                {/* 注意引入本地图片直接 require，不再需要 uri 了 */}
+                <Image style={styles.gridImg} source={require('../../images/calendar.png')} />
+                <Text>天降正义</Text>
+            </View>
+            {/* ... */}
+        </View>
+    </View>
+</ScrollView>
+```
