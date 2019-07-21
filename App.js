@@ -9,6 +9,7 @@ React.Component.prototype.apikey = '0df993c66c0c636e29ecbb5344252a4a';
 
 import Main from './components/Main';
 import MovieList from './components/movie/MovieList';
+import MovieDetail from './components/movie/MovieDetail';
 
 export default class App extends Component {
     render() {
@@ -45,6 +46,15 @@ export default class App extends Component {
                             mtype="top250"
                         />
                     </Tabs>
+                    <Scene
+                        key="moviedetail"
+                        component={MovieDetail}
+                        title="电影详情"
+                        navigationBarStyle={{backgroundColor: '#1f96f1', height: 50}}
+                        titleStyle={{color: '#fff', fontSize: 14}}
+                        // 颜色修改没作用？
+                        backButtonTintColor='#fff'
+                    />
                 </Stack>
             </Router>
         );

@@ -291,3 +291,11 @@ loadMore = () => {
 }
 ```
 
+## 电影详情
+
+**App.js** 中配置路由
+
+```javascript
+<Scene key="moviedetail" component={MovieDetail} hideNavBar={true} />
+```
+
