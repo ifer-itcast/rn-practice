@@ -8,7 +8,9 @@ export default class MovieList extends Component {
     }
     render() {
         return (
-            <View><Text>dd</Text></View>
+            <View>
+                <Text>dd</Text>
+            </View>
         );
     }
 }
