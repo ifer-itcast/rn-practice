@@ -87,3 +87,52 @@ export default class Main extends Component {
 }
 ```
 
+## 配置 TabBar 的 Icon
+
+- 安装
+
+```javascript
+yarn add react-native-vector-icons
+```
+
+- link
+
+```javascript
+react-native link
+```
+
+- 打开`android/app/build.gradle`，定位到第`81行`，添加如下代码
+
+```javascript
+// 自定义项目用用到的 字体文件
+project.ext.vectoricons = [
+    iconFontNames: ['Ionicons.ttf'] // Name of the font files you want to copy
+]
+
+// 应用导入的字体文件
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+```
+
+- 重新编译
+
+```javascript
+react-native run-android
+```
+
+- 使用
+
+```javascript
+import Icon from 'react-native-vector-icons/Ionicons';
+```
+
+```javascript
+<TabNavigator.Item
+    selected={this.state.selectedTab === 'home'}
+    title="首页"
+    onPress={() => this.setState({ selectedTab: 'home' })}
+    renderIcon={() => <Icon name="md-home" size={22} color="#900" />}
+    renderSelectedIcon={() => <Icon name="md-home" size={22} color="#0078d7" />}
+>
+    <Home></Home>
+</TabNavigator.Item>
+```

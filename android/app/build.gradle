@@ -78,6 +78,14 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 
+// 自定义项目用用到的 字体文件
+project.ext.vectoricons = [
+    iconFontNames: ['Ionicons.ttf'] // Name of the font files you want to copy
+]
+
+// 应用导入的字体文件
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -138,6 +146,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-vector-icons')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
