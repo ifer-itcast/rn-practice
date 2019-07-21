@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 
 import { Router, Stack, Scene, Actions, Tabs } from 'react-native-router-flux';
 React.Component.prototype.Actions = Actions;
+// https://api.douban.com
+// http://www.liulongbin.top:3005
+React.Component.prototype.baseURL = 'https://api.douban.com';
+React.Component.prototype.apikey = '0df993c66c0c636e29ecbb5344252a4a';
 
 import Main from './components/Main';
 import MovieList from './components/movie/MovieList';

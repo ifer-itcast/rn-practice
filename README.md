@@ -258,3 +258,14 @@ export default class Home extends Component {
     </Stack>
 </Router>
 ```
+
+## 电影列表 FlatList
+
+```javascript
+<FlatList
+    data={this.state.mlist}
+    renderItem={({ item, index }) => this.renderMovieItem(item)}
+    keyExtractor={item => item.id + ''}
+    ItemSeparatorComponent={() => <View style={{ borderTopColor: '#ccc', borderTopWidth: 1, marginHorizontal: 10 }}></View>}
+/>
+```
