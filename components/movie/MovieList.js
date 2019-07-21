@@ -16,7 +16,9 @@ export default class MovieList extends Component {
             isLoading: true,
             nowPage: 1,
             pageSize: 10,
-            mlist: []
+            mlist: [],
+            isOver: false,
+            totalSize: 0
         };
     }
     componentWillMount() {
@@ -35,6 +37,9 @@ export default class MovieList extends Component {
                             renderItem={({ item, index }) => this.renderMovieItem(item)}
                             keyExtractor={item => item.id + ''}
                             ItemSeparatorComponent={() => <View style={{ borderTopColor: '#ccc', borderTopWidth: 1, marginHorizontal: 10 }}></View>}
+                            onEndReachedThreshold={0.3}
+                            onEndReached={() => this.loadMore()}
+                            ListFooterComponent={() => this.state.isOver ? null : <ActivityIndicator/>}
                         />
                 }
             </View>
@@ -44,11 +49,13 @@ export default class MovieList extends Component {
         // APP 中不存在跨域的问题！
         const { nowPage, pageSize } = this.state;
         const start = (nowPage - 1) * pageSize;
-        const res = await fetch(this.baseURL + `/v2/movie/${this.props.mtype}?${start}=0&count=${pageSize}&apikey=${this.apikey}`);
+        const res = await fetch(this.baseURL + `/v2/movie/${this.props.mtype}?start=${start}&count=${pageSize}&apikey=${this.apikey}`);
         const data = await res.json();
+        console.warn(data.subjects.length);
         this.setState({
-            mlist: data.subjects,
-            isLoading: false
+            mlist: this.state.mlist.concat(data.subjects),
+            isLoading: false,
+            totalSize: data.total
         });
     }
     renderMovieItem = (item) => {
@@ -63,5 +70,21 @@ export default class MovieList extends Component {
                 <Text>豆瓣评分：{item.rating.average}</Text>
             </View>
         </View>
+    }
+    loadMore = () => {
+        // 先判断还有更多吗
+        // nowPage * pageSize >= totalSize 证明没有下一页了
+        const {nowPage, pageSize, totalSize} = this.state;
+        if(nowPage * pageSize >= totalSize) {
+            this.setState({
+                isOver: true // 数据加载完了把 loading 干掉
+            });
+        } else {
+            this.setState({
+                nowPage: nowPage + 1
+            }, () => {
+                this.getMovieListByType();
+            });
+        }
     }
 }

@@ -269,3 +269,25 @@ export default class Home extends Component {
     ItemSeparatorComponent={() => <View style={{ borderTopColor: '#ccc', borderTopWidth: 1, marginHorizontal: 10 }}></View>}
 />
 ```
+
+## 上拉加载更多
+
+```javascript
+loadMore = () => {
+    // 先判断还有更多吗
+    // nowPage * pageSize >= totalSize 证明没有下一页了
+    const {nowPage, pageSize, totalSize} = this.state;
+    if(nowPage * pageSize >= totalSize) {
+        this.setState({
+            isOver: true // 数据加载完了把 loading 干掉
+        });
+    } else {
+        this.setState({
+            nowPage: nowPage + 1
+        }, () => {
+            this.getMovieListByType();
+        });
+    }
+}
+```
+
