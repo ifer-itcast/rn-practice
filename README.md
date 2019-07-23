@@ -299,6 +299,110 @@ loadMore = () => {
 <Scene key="moviedetail" component={MovieDetail} hideNavBar={true} />
 ```
 
+## 调用相机
+
+1. 安装
+
+```javascript
+yarn add react-native-image-picker
+```
+
+2. link
+
+```javascript
+react-native link
+```
+
+3. 修改 `AndroidManifest.xml`
+
+`android`->`app`->`src`->`main`->`AndroidManifest.xml`文件，在第8行添加如下配置：
+
+```javascript
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+```
+
+4. 修改 `MainActivity.java`
+
+`android`->`app`->`src`->`main`->`java`->`com`->`当前项目名称文件夹`->`MainActivity.java`文件，修改配置如下：
+
+```javascript
+package com.native_camera;
+import com.facebook.react.ReactActivity;
+
+// 1. 添加以下 2 行：
+import com.imagepicker.permissions.OnImagePickerPermissionsCallback;
+import com.facebook.react.modules.core.PermissionListener;
+
+public class MainActivity extends ReactActivity {
+    // 2. 添加如下 1 行：
+    private PermissionListener listener;
+
+    /**
+     * Returns the name of the main component registered from JavaScript.
+     * This is used to schedule rendering of the component.
+     */
+    @Override
+    protected String getMainComponentName() {
+        return "native_camera";
+    }
+}
+```
+
+5. 使用
+
+```javascript
+// 第1步：
+import {View, Button, Image} from 'react-native'
+import ImagePicker from 'react-native-image-picker'
+var photoOptions = {
+    //底部弹出框选项
+    title: '请选择',
+    cancelButtonTitle: '取消',
+    takePhotoButtonTitle: '拍照',
+    chooseFromLibraryButtonTitle: '选择相册',
+    quality: 0.75,
+    allowsEditing: true,
+    noData: false,
+    storageOptions: {
+        skipBackup: true,
+        path: 'images'
+    }
+}
+
+// 第2步：
+constructor(props) {
+    super(props);
+    this.state = {
+        imgURL: ''
+    }
+}
+
+// 第3步：
+<Image source={{ uri: this.state.imgURL }} style={{ width: 200, height: 200 }}></Image>
+<Button title="拍照" onPress={this.cameraAction}></Button>
+
+// 第4步：
+cameraAction = () => {
+    ImagePicker.showImagePicker(photoOptions, (response) => {
+        console.log('response' + response);
+        if (response.didCancel) {
+            return
+        }
+        this.setState({
+            imgURL: response.uri
+        });
+    })
+}
+```
+
+6. 重新进行打包部署
+
+```javascript
+// 一次不行退出多试几次！
+react-native run-android
+```
+
 ## 修改应用图标和名称
 
 - android/app/src/main/res/values/strings.xml`修改应用名称
@@ -329,10 +433,10 @@ MYAPP_RELEASE_KEY_PASSWORD=*****
 
 6. 编辑 android/app/build.gradle文件添加如下代码：
 
-```
-...
+```javascript
+// ...
 android {
-    ...
+    // ...
     defaultConfig { ... }
     + signingConfigs {
     +    release {
@@ -344,16 +448,14 @@ android {
     +}
     buildTypes {
         release {
-            ...
-    +        signingConfig signingConfigs.release
+            // ...
+    +       signingConfig signingConfigs.release
         }
     }
 }
-...
+// ...
 ```
 
 7. 进入项目根目录下的`android`文件夹，打开终端，然后输入`./gradlew assembleRelease`开始发布APK的Release版；
 
 8. 当发行完毕后，进入自己项目的`android\app\build\outputs\apk`目录中，找到`app-release.apk`，这就是我们发布完毕之后的完整安装包；就可以上传到各大应用商店供用户使用啦；
-
-> 注意：请记得妥善地保管好你的密钥库文件，不要上传到版本库或者其它的地方。

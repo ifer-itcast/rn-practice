@@ -5320,6 +5320,11 @@ react-native-drawer-layout@1.3.2:
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
 
+react-native-image-picker@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/react-native-image-picker/download/react-native-image-picker-1.0.1.tgz?cache=0&sync_timestamp=1562663412728&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-native-image-picker%2Fdownload%2Freact-native-image-picker-1.0.1.tgz#8d5f1865f26da603a72787936ed687c11d1bfdd0"
+  integrity sha1-jV8YZfJtpgOnJ4eTbtaHwR0b/dA=
+
 react-native-router-flux@^4.0.6:
   version "4.0.6"
   resolved "https://registry.npm.taobao.org/react-native-router-flux/download/react-native-router-flux-4.0.6.tgz#e4723f5ce89cb5822e0c9bb6d0a8d4de6179eb58"
