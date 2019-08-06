@@ -14,7 +14,7 @@ react-native run-android
 react-native start
 ```
 
-## 配置路由
+## 路由的基本操作
 
 ```javascript
 // 每次安装新包需要重新编译或Start
@@ -46,9 +46,48 @@ export default class App extends Component {
 }
 ```
 
-## Main.js 中配置 TabBar
+```javascript
+<Router>
+    // 除了上面 Stack 的方式，也可以使用 Tabs
+    <Tabs>
+        <Scene
+            key="home"
+            component={Home}
+            title="首页"
+            icon={() => <Image style={{height: 24, width:24}} source={require('./images/print.png')}/>}
+            hideNavBar
+        />
+    </Tabs>
+</Router>
+```
+
+编程式导航通过 Actions 跳转并传值
 
 ```javascript
+// 挂载到 Component 原型上，方便每个组件的使用
+React.Component.prototype.Actions = Actions;
+```
+
+```javascript
+// 通过 Actions 跳转的时候可以传值
+<View style={{marginHorizontal: 50, paddingVertical: 80}}>
+    <Button title="去电影" onPress={() => this.Actions.movie({age: 18})}></Button>
+</View>
+           
+// 另外一个组件中可以如下接收方式
+console.warn(this.props.age)
+```
+
+```javascript
+// 第二种传值的方式
+// 在 Movie 组件中也可以通过 this.props.uname 进行接收
+<Scene key="movie" component={Movie} uname="Ifer"/>
+```
+
+## 配置 TabBar
+
+```javascript
+// 项目中使用此库做 Tab 的切换功能
 yarn add react-native-tab-navigator
 ```
 
@@ -87,21 +126,21 @@ export default class Main extends Component {
 }
 ```
 
-## 配置 TabBar 的 Icon
+## 使用字体图标
 
-- 安装
+**1. 安装**
 
 ```javascript
 yarn add react-native-vector-icons
 ```
 
-- link
+**2. link**
 
 ```javascript
 react-native link
 ```
 
-- 打开`android/app/build.gradle`，定位到第`81行`，添加如下代码
+**3. 打开`android/app/build.gradle`，定位到第`81行`，添加如下代码**
 
 ```javascript
 // 自定义项目用用到的 字体文件
@@ -113,13 +152,13 @@ project.ext.vectoricons = [
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 ```
 
-- 重新编译
+**4. 重新编译**
 
 ```javascript
 react-native run-android
 ```
 
-- 使用
+**5. 使用**
 
 ```javascript
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -137,7 +176,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 </TabNavigator.Item>
 ```
 
-## Home.js 中添加轮播
+## 轮播图
 
 ```javascript
 yarn add react-native-swiper@nightly
@@ -176,7 +215,7 @@ export default class Home extends Component {
 }
 ```
 
-## Home.js 六宫格布局
+## 六宫格布局
 
 ```javascript
 <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -194,23 +233,26 @@ export default class Home extends Component {
 </ScrollView>
 ```
 
-## 编程式导航跳转电影列表
-
-**App.js**
+## 整体路由设计
 
 ```javascript
+// App.js，所有的路由都是在这里配置的
 <Router>
-    {/* 配置 */}
     <Stack>
+        {/* 默认显示 Main 组件，Main 组件底部配置了 TabBar */}
+        {/* 首页 */}
         <Scene key="main" component={Main} hideNavBar={true} />
-        <Scene key="in_theaters" component={MovieList} />
+        {/* 电影页路由 */}
+        
+        {/* 电影详情页路由 */}
     </Stack>
 </Router>
 ```
 
-**Home.js**
+编程式导航跳转电影列表
 
 ```javascript
+// Home.js
 <TouchableOpacity style={styles.gridItem} onPress={() => this.Actions.in_theaters()}>
     <View>
         <Image style={styles.gridImg} source={require('../../images/files-and-folders.png')} />
@@ -219,44 +261,40 @@ export default class Home extends Component {
 </TouchableOpacity>
 ```
 
-## 电影列表 TabBar
+## 电影页路由
+
+**App.js** 中配置路由
 
 ```javascript
-<Router>
-    {/* 配置 */}
-    <Stack>
-        <Scene key="main" component={Main} hideNavBar={true} />
-        <Tabs
-            {/* tabBarPosition="top" 有个警告待解决！ */}
-            tabBarPosition="top"
-            hideNavBar={true}
-            // 启动Scene的懒加载效果，知道对应的路由被激活时，才会创建对应的组件
-            lazy={true}
-        >
-            <Scene
-                key="in_theaters" 
-                component={MovieList} 
-                title="正在热映" 
-                hideNavBar={true} 
-                mtype="in_theaters"
-            />
-            <Scene 
-                key="coming_soon" 
-                component={MovieList} 
-                title="即将上映" 
-                hideNavBar={true} 
-                mtype="coming_soon"
-            />
-            <Scene 
-                key="top250" 
-                component={MovieList} 
-                title="Top250" 
-                hideNavBar={true} 
-                mtype="top250"
-            />
-        </Tabs>
-    </Stack>
-</Router>
+<Tabs
+    {/* tabBarPosition="top" 有个警告待解决！ */}
+    tabBarPosition="top"
+    hideNavBar={true}
+    // 启动Scene的懒加载效果，知道对应的路由被激活时，才会创建对应的组件
+    lazy={true}
+>
+    <Scene
+        key="in_theaters" 
+        component={MovieList} 
+        title="正在热映" 
+        hideNavBar={true} 
+        mtype="in_theaters"
+    />
+    <Scene 
+        key="coming_soon" 
+        component={MovieList} 
+        title="即将上映" 
+        hideNavBar={true} 
+        mtype="coming_soon"
+    />
+    <Scene 
+        key="top250" 
+        component={MovieList} 
+        title="Top250" 
+        hideNavBar={true} 
+        mtype="top250"
+    />
+</Tabs>
 ```
 
 ## 电影列表 FlatList
@@ -264,11 +302,13 @@ export default class Home extends Component {
 ```javascript
 <FlatList
     data={this.state.mlist}
+    // renderMovieItem 函数中渲染内容，并进行 onpress 跳转的操作
     renderItem={({ item, index }) => this.renderMovieItem(item)}
     keyExtractor={item => item.id + ''}
     ItemSeparatorComponent={() => <View style={{ borderTopColor: '#ccc', borderTopWidth: 1, marginHorizontal: 10 }}></View>}
 />
 ```
+
 
 ## 上拉加载更多
 
@@ -291,29 +331,37 @@ loadMore = () => {
 }
 ```
 
-## 电影详情
+## 电影详情路由
 
 **App.js** 中配置路由
 
 ```javascript
-<Scene key="moviedetail" component={MovieDetail} hideNavBar={true} />
+<Scene
+    key="moviedetail"
+    component={MovieDetail}
+    title="电影详情"
+    navigationBarStyle={{backgroundColor: '#1f96f1', height: 50}}
+    titleStyle={{color: '#fff', fontSize: 14}}
+    // 颜色修改没作用？
+    backButtonTintColor='#fff'
+/>
 ```
 
 ## 调用相机
 
-1. 安装
+**1. 安装**
 
 ```javascript
 yarn add react-native-image-picker
 ```
 
-2. link
+**2. link**
 
 ```javascript
 react-native link
 ```
 
-3. 修改 `AndroidManifest.xml`
+**3. 修改 `AndroidManifest.xml`**
 
 `android`->`app`->`src`->`main`->`AndroidManifest.xml`文件，在第8行添加如下配置：
 
@@ -322,7 +370,7 @@ react-native link
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 ```
 
-4. 修改 `MainActivity.java`
+**4. 修改 `MainActivity.java`**
 
 `android`->`app`->`src`->`main`->`java`->`com`->`当前项目名称文件夹`->`MainActivity.java`文件，修改配置如下：
 
@@ -349,7 +397,7 @@ public class MainActivity extends ReactActivity {
 }
 ```
 
-5. 使用
+**5. 使用**
 
 ```javascript
 // 第1步：
@@ -396,7 +444,7 @@ cameraAction = () => {
 }
 ```
 
-6. 重新进行打包部署
+**6. 重新进行打包部署**
 
 ```javascript
 // 一次不行退出多试几次！
