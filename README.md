@@ -14,20 +14,23 @@ react-native run-android
 react-native start
 ```
 
-## 路由的基本操作
+## 配置 Main 组件路由
+
+Main 组件是默认显示组件，也是一个包裹组件。Main 组件底部有一个 TabBar，默认又显示 Home 组件。
 
 ```javascript
 // 每次安装新包需要重新编译或Start
 yarn add react-native-router-flux
 ```
 
-**App.js** 中导入并配置
+**App.js** 配置路由显示首页（Main）
 
 ```javascript
 import React, { Component } from 'react';
 
 // 导入
 import { Router, Stack, Scene, Actions } from 'react-native-router-flux';
+// 挂载到 Component 原型上，方便每个组件的使用
 React.Component.prototype.Actions = Actions;
 
 import Main from './components/Main';
@@ -46,6 +49,8 @@ export default class App extends Component {
 }
 ```
 
+## 关于路由的其他一些知识
+
 ```javascript
 <Router>
     // 除了上面 Stack 的方式，也可以使用 Tabs
@@ -61,21 +66,13 @@ export default class App extends Component {
 </Router>
 ```
 
-编程式导航通过 Actions 跳转并传值
-
-```javascript
-// 挂载到 Component 原型上，方便每个组件的使用
-React.Component.prototype.Actions = Actions;
-```
+**编程式导航通过 Actions 跳转并传值**
 
 ```javascript
 // 通过 Actions 跳转的时候可以传值
 <View style={{marginHorizontal: 50, paddingVertical: 80}}>
     <Button title="去电影" onPress={() => this.Actions.movie({age: 18})}></Button>
 </View>
-           
-// 另外一个组件中可以如下接收方式
-console.warn(this.props.age)
 ```
 
 ```javascript
@@ -84,7 +81,12 @@ console.warn(this.props.age)
 <Scene key="movie" component={Movie} uname="Ifer"/>
 ```
 
-## 配置 TabBar
+```javascript
+// 另外一个组件中可以如下接收方式
+console.warn(this.props.age)
+```
+
+## 配置 Main 组件底部的 TabBar
 
 ```javascript
 // 项目中使用此库做 Tab 的切换功能
@@ -111,6 +113,7 @@ export default class Main extends Component {
         return (
             <View style={{ flex: 1 }}>
                 <TabNavigator>
+                    {/* 默认显示 Home */}
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'home'}
                         title="首页"
@@ -233,23 +236,9 @@ export default class Home extends Component {
 </ScrollView>
 ```
 
-## 整体路由设计
+## 编程式导航跳转电影列表
 
-```javascript
-// App.js，所有的路由都是在这里配置的
-<Router>
-    <Stack>
-        {/* 默认显示 Main 组件，Main 组件底部配置了 TabBar */}
-        {/* 首页 */}
-        <Scene key="main" component={Main} hideNavBar={true} />
-        {/* 电影页路由 */}
-        
-        {/* 电影详情页路由 */}
-    </Stack>
-</Router>
-```
-
-编程式导航跳转电影列表
+点击 Home.js 中的电影列表跳转到电影列表界面
 
 ```javascript
 // Home.js
@@ -261,43 +250,98 @@ export default class Home extends Component {
 </TouchableOpacity>
 ```
 
-## 电影页路由
-
-**App.js** 中配置路由
+## 配置电影列表的路由
 
 ```javascript
-<Tabs
-    {/* tabBarPosition="top" 有个警告待解决！ */}
-    tabBarPosition="top"
-    hideNavBar={true}
-    // 启动Scene的懒加载效果，知道对应的路由被激活时，才会创建对应的组件
-    lazy={true}
->
-    <Scene
-        key="in_theaters" 
-        component={MovieList} 
-        title="正在热映" 
-        hideNavBar={true} 
-        mtype="in_theaters"
-    />
-    <Scene 
-        key="coming_soon" 
-        component={MovieList} 
-        title="即将上映" 
-        hideNavBar={true} 
-        mtype="coming_soon"
-    />
-    <Scene 
-        key="top250" 
-        component={MovieList} 
-        title="Top250" 
-        hideNavBar={true} 
-        mtype="top250"
-    />
-</Tabs>
+// App.js，所有的路由都是在这里配置的
+<Router>
+    <Stack>
+        {/* 默认显示 Main 组件，Main 组件底部配置了 TabBar */}
+        {/* 首页 */}
+        <Scene key="main" component={Main} hideNavBar={true} />
+        {/* 电影页路由 */}
+        <Tabs
+            {/* tabBarPosition="top" 有个警告待解决！ */}
+            tabBarPosition="top"
+            hideNavBar={true}
+            // 启动Scene的懒加载效果，直到对应的路由被激活时，才会创建对应的组件
+            lazy={true}
+        >
+            <Scene
+                key="in_theaters" 
+                component={MovieList} 
+                title="正在热映" 
+                hideNavBar={true} 
+                // 通过给路由传参 mtype，使相同的 MovieList 组件获得不同的数据
+                mtype="in_theaters"
+            />
+            <Scene 
+                key="coming_soon" 
+                component={MovieList} 
+                title="即将上映" 
+                hideNavBar={true} 
+                mtype="coming_soon"
+            />
+            <Scene 
+                key="top250" 
+                component={MovieList} 
+                title="Top250" 
+                hideNavBar={true} 
+                mtype="top250"
+            />
+        </Tabs>
+        {/* 电影详情页路由 */}
+    </Stack>
+</Router>
 ```
 
-## 电影列表 FlatList
+## 电影列表的 loading 效果
+
+```javascript
+import React from 'react';
+import {Text, ActivityIndicator, View} from 'react-native';
+
+export default class MovieList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoading: true
+        };
+    }
+    render() {
+        const {isLoading} = this.state;
+        return (
+            <View>
+                {
+                    isLoading
+                    ?
+                    <ActivityIndicator size="large"/>
+                    :
+                    <View>
+                        <Text>加载完了</Text>
+                    </View>
+                }
+            </View>
+        );
+    }
+}
+```
+
+## 根据 mtype 获取数据
+
+```javascript
+getDataByMtype = async () => {
+    // https://api.douban.com/v2/movie/in_theaters?start=0&count=1&apikey=0df993c66c0c636e29ecbb5344252a4a
+    const {pageNow, pageCount} = this.state;
+    const start = (pageNow - 1) * pageCount;
+    // 注意！fetch 得到的就是一个 promise，不需要解构出 res
+    const res = await fetch(this.baseURL + `/v2/movie/${this.props.mtype}?start=${start}&count=${pageCount}&apikey=${this.apikey}`);
+    const mlist = await res.json();
+    this.setState({mlist, isLoading: false});
+}
+```
+
+## 根据数据渲染电影列表 FlatList
 
 ```javascript
 <FlatList
@@ -308,7 +352,6 @@ export default class Home extends Component {
     ItemSeparatorComponent={() => <View style={{ borderTopColor: '#ccc', borderTopWidth: 1, marginHorizontal: 10 }}></View>}
 />
 ```
-
 
 ## 上拉加载更多
 
@@ -453,8 +496,8 @@ react-native run-android
 
 ## 修改应用图标和名称
 
-- android/app/src/main/res/values/strings.xml`修改应用名称
-- android\app\src\main\res\mipmap-xxxxxx`修改图标
+- `android/app/src/main/res/values/strings.xml` 修改应用名称
+- `android\app\src\main\res\mipmap-xxxxxx` 修改图标
 
 ## 签名打包
 
