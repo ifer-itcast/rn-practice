@@ -49,43 +49,6 @@ export default class App extends Component {
 }
 ```
 
-## 关于路由的其他一些知识
-
-```javascript
-<Router>
-    // 除了上面 Stack 的方式，也可以使用 Tabs
-    <Tabs>
-        <Scene
-            key="home"
-            component={Home}
-            title="首页"
-            icon={() => <Image style={{height: 24, width:24}} source={require('./images/print.png')}/>}
-            hideNavBar
-        />
-    </Tabs>
-</Router>
-```
-
-**编程式导航通过 Actions 跳转并传值**
-
-```javascript
-// 通过 Actions 跳转的时候可以传值
-<View style={{marginHorizontal: 50, paddingVertical: 80}}>
-    <Button title="去电影" onPress={() => this.Actions.movie({age: 18})}></Button>
-</View>
-```
-
-```javascript
-// 第二种传值的方式
-// 在 Movie 组件中也可以通过 this.props.uname 进行接收
-<Scene key="movie" component={Movie} uname="Ifer"/>
-```
-
-```javascript
-// 另外一个组件中可以如下接收方式
-console.warn(this.props.age)
-```
-
 ## 配置 Main 组件底部的 TabBar
 
 ```javascript
@@ -293,6 +256,43 @@ export default class Home extends Component {
         {/* 电影详情页路由 */}
     </Stack>
 </Router>
+```
+
+**Tabs 的使用比较灵活，根据需求不必一定放在 Stack 中，例如：**
+
+```javascript
+<Router>
+    // 除了上面 Stack 的方式，也可以使用 Tabs
+    <Tabs>
+        <Scene
+            key="home"
+            component={Home}
+            title="首页"
+            icon={() => <Image style={{height: 24, width:24}} source={require('./images/print.png')}/>}
+            hideNavBar
+        />
+    </Tabs>
+</Router>
+```
+
+**关于路由传参的两种方式**
+
+```javascript
+// 通过 Actions 跳转的时候可以传值
+<View style={{marginHorizontal: 50, paddingVertical: 80}}>
+    <Button title="去电影" onPress={() => this.Actions.movie({age: 18})}></Button>
+</View>
+```
+
+```javascript
+// 第二种传值的方式
+// 在 Movie 组件中也可以通过 this.props.uname 进行接收
+<Scene key="movie" component={Movie} uname="Ifer"/>
+```
+
+```javascript
+// 另外一个组件中可以如下接收方式
+console.warn(this.props.age)
 ```
 
 ## 电影列表的 loading 效果
