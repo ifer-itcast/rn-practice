@@ -348,33 +348,64 @@ getDataByMtype = async () => {
     data={this.state.mlist}
     // renderMovieItem 函数中渲染内容，并进行 onpress 跳转的操作
     renderItem={({ item, index }) => this.renderMovieItem(item)}
+    // 注意 key 要是一个字符串
     keyExtractor={item => item.id + ''}
     ItemSeparatorComponent={() => <View style={{ borderTopColor: '#ccc', borderTopWidth: 1, marginHorizontal: 10 }}></View>}
 />
+```
+
+```javascript
+renderMovieItem = (item) => {
+    return (
+        <View style={{ flexDirection: 'row', margin: 10 }}>
+            <Image source={{
+                uri: item.images.small
+            }} style={{ width: 120, height: 160, marginRight: 10 }} />
+            <View style={{ justifyContent: 'space-around' }}>
+                <Text>电影名称：{item.title}</Text>
+                <Text>电影类型：{item.genres.join(', ')}</Text>
+                <Text>上映年份：{item.year}年</Text>
+                <Text>豆瓣评分：{item.rating.average}</Text>
+            </View>
+        </View>
+    );
+}
 ```
 
 ## 上拉加载更多
 
 ```javascript
 loadMore = () => {
-    // 先判断还有更多吗
-    // nowPage * pageSize >= totalSize 证明没有下一页了
-    const {nowPage, pageSize, totalSize} = this.state;
-    if(nowPage * pageSize >= totalSize) {
-        this.setState({
-            isOver: true // 数据加载完了把 loading 干掉
-        });
-    } else {
-        this.setState({
-            nowPage: nowPage + 1
-        }, () => {
-            this.getMovieListByType();
-        });
-    }
+    this.setState({
+        nowPage: nowPage + 1
+    }, this.getMovieListByType);
 }
 ```
 
-## 电影详情路由
+```javascript
+// getMovieListByType() 函数改变如下：
+this.setState({
+    mlist: [...this.state.mlist, ...mlist.subjects]
+});
+```
+
+在下拉加载更多的时候，出现底部的loading圈，数据加载完毕时需要删除
+
+```javascript
+loadMore = () => {
+    // 如果【当前页面 * 每页显示数量 > 总数量】代表加载完啦
+    const {pageNow, pageCount,total} = this.state;
+    if(pageNow * pageCount > total) {
+        this.setState({
+            isOver: true
+        });
+        return;
+    }
+    // ...
+}
+```
+
+## 点击电影列表跳转详情
 
 **App.js** 中配置路由
 
@@ -388,6 +419,32 @@ loadMore = () => {
     // 颜色修改没作用？
     backButtonTintColor='#fff'
 />
+```
+
+```javascript
+<TouchableNativeFeedback
+    background={TouchableNativeFeedback.SelectableBackground()}
+    onPress={() => this.Actions.moviedetail({
+        id: item.id,
+        title: item.title
+    })}
+>
+// 包裹的是每一个电影列表
+</TouchableNativeFeedback>
+```
+
+## 电影详情页
+
+```javascript
+// 根据电影 ID 获取数据
+getMovieDetail = async () => {
+    const res = await fetch(`${this.baseURL}/v2/movie/subject/${this.props.id}?apikey=${this.apikey}`);
+    const data = await res.json();
+    this.setState({
+        mdetail: data,
+        isLoading: false
+    });
+}
 ```
 
 ## 调用相机
